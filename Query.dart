@@ -1,15 +1,24 @@
-List<T> applyFilter<T>(
+abstract class SimpleFilter<T>{
+ List<T> applyFilter(
   List<T> customers,
   bool Function(T) predicate,
-) {
-  List<T> results = [];
-  for (var customer in customers) {
-    if (predicate(customer)) {
-      results.add(customer);
-    }
-  }
-  return results;
+);
 }
+
+
+//{
+  // List<T> results = [];
+  // for (var customer in customers) {
+  //   if (predicate(customer)) {
+  //     results.add(customer);
+  //   }
+  // }
+  // return results;
+//}
+
+
+//=> customers.where(predicate).toList();
+
 
 
 

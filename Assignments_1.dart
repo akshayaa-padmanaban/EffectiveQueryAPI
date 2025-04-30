@@ -3,56 +3,65 @@ import 'dart:io';
 
 import 'AppData.dart';
 import 'Customers.dart';
-import 'Query.dart';
 void main()
 {
+  List<Customers> customers = mobCustData.map((e) => Customers.fromMap(e)).toList();
   
-    List<Customers> customers = mobCustData.map((e) => Customers.fromMap(e)).toList();
-
-    stdout.write('Enter the Query:');
-    String? input = stdin.readLineSync()?.trim();
-
-    if (input == null || input.isEmpty)
-    {
-      print('Exit');
-      return;
-    }
-
-    input = input.trim().toLowerCase();
+  stdout.write('Enter the Query:');
+  String? input = stdin.readLineSync()?.trim().toLowerCase();
+  
+  if (input == null || input.isEmpty)
+  {
+    print('Exit');
+    return;
+  }
+  
+  final filter = CustomerFilter();
   List<Customers> filtered = [];
-
-  if (input.startsWith('>') || input.startsWith('<')) {
+  
+  if (input.startsWith('>') || input.startsWith('<')) 
+  {
     double? amount = double.tryParse(input.substring(1).trim());
-    if (amount == null) {
+    if (amount == null) 
+    {
       print('Invalid');
       return;
     }
-
-    filtered = applyFilter(customers, (c) {
-      if (input!.startsWith('>')) return c.loanAmount > amount;
+    
+    filtered = filter.applyFilter(customers, (c) 
+    {
+      if (input.startsWith('>')) return c.loanAmount > amount;
       if (input.startsWith('<')) return c.loanAmount < amount;
       return false;
     });
-  } else if (input.contains('last week') || input.contains('last month') || input.contains('last quarter')) {
-    int days = 0;
-    if (input.contains('last week')) days = 7;
-    else if (input.contains('last month')) days = 30;
-    else if (input.contains('last quarter')) days = 90;
-
-    DateTime cutoff = DateTime.now().subtract(Duration(days: days));
-
-    filtered = applyFilter(customers, (c) => c.createdOn.isAfter(cutoff));
-  } else {
-    filtered = applyFilter(customers, (c) =>
-      c.name.toLowerCase().contains(input!) || c.mobileNo.contains(input) || c.appId.contains(input) || c.leadId.contains(input));
-  }
-
-  if (filtered.isEmpty) {
-    print('Invalid');
-  } else {
-    for (var customer in filtered) {
-      print(customer);
-    }
+    } 
+    else if (input.contains('last week') || input.contains('last month') || input.contains('last quarter')) 
+    {
+      int days = 0;
+      if (input.contains('last week')) days = 7;
+      else if (input.contains('last month')) days = 30;
+      else if (input.contains('last quarter')) days = 90;
+      
+      DateTime cutoff = DateTime.now().subtract(Duration(days: days));
+      filtered = filter.applyFilter(customers, (c) => c.createdOn.isAfter(cutoff));
+      } 
+      else 
+      {
+        filtered = filter.applyFilter(customers, (c) => c.name.toLowerCase().contains(input) || 
+        c.mobileNo.contains(input) || 
+        c.appId.contains(input) || 
+        c.leadId.contains(input));
+      }
+      if (filtered.isEmpty) 
+      {
+        print('Invalid');
+      } 
+      else 
+      {
+        for (var customer in filtered) 
+        {
+          print(customer);
+        }
   }
 }
 

@@ -1,3 +1,5 @@
+import 'Query.dart';
+
 class Customers{
   final String leadId;
   final String appId;
@@ -32,4 +34,14 @@ class Customers{
     return 'LeadId:$leadId, AppId:$appId, Name:$name, MobileNo:$mobileNo, LoanAmount:$loanAmount, CreatedOn:$createdOn';
   }
 
+}
+
+class CustomerFilter extends SimpleFilter<Customers> {
+  @override
+  List<Customers> applyFilter(
+    List<Customers> customers,
+    bool Function(Customers) predicate,
+  ) {
+    return customers.where(predicate).toList();
+  }
 }
